@@ -27,3 +27,21 @@ class MenuBuilder:
     # Req 4
     def get_main_menu(self, restriction=None) -> List[Dict]:
         pass
+
+        filtered_menu = [
+            {
+                'dish_name': dish.name,
+                'ingredients': dish.get_ingredients(),
+                'price': dish.price,
+                'restrictions': dish.get_restrictions()
+            }
+            for dish in self.menu_data.dishes
+            if not dish.get_restrictions().intersection({restriction})
+            and not any(
+                key not in self.inventory.inventory
+                or self.inventory.inventory[key] < value
+                for key, value in dish.recipe.items()
+            )
+        ]
+
+        return filtered_menu
